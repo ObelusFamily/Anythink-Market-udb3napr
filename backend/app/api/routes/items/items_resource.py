@@ -1,9 +1,6 @@
-import os
 from typing import Optional
 
-from dotenv import load_dotenv
 from fastapi import APIRouter, Body, Depends, HTTPException, Response
-import openai
 from starlette import status
 
 from app.api.dependencies.items import (
@@ -28,11 +25,7 @@ from app.resources import strings
 from app.services.items import check_item_exists, get_slug_for_item
 from app.services.event import send_event
 
-load_dotenv()
-
 router = APIRouter()
-
-openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
 @router.get("", response_model=ListOfItemsInResponse, name="items:list-items")
@@ -75,13 +68,6 @@ async def create_new_item(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=strings.ITEM_ALREADY_EXISTS,
         )
-    if not item_create.image:
-        response = openai.Image.create(
-            prompt=item_create.title,
-            n=1,
-            size="1024x1024"
-        )
-        item_create.image = response['data'][0]['url']
     item = await items_repo.create_item(
         slug=slug,
         title=item_create.title,
