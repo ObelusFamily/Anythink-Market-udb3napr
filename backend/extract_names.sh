@@ -11,7 +11,7 @@ last_name_column=1
 first_name_column=2
 
 # Output file
-output_file="output.txt"
+output_file="output_names.txt"
 
 # Clear existing output file
 > "$output_file"
